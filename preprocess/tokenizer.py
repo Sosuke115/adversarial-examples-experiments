@@ -1,3 +1,10 @@
+#usage
+#python3 tokenizer.py --lang ja --input sample/ja.txt --output sample/ja.tok
+
+#requirement
+#mojimoji
+#kytea
+
 from moses import MosesTokenizer
 from japanese_tokenizer import JapaneseTokenizer
 from tqdm import tqdm
