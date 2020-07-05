@@ -22,6 +22,8 @@ def tokenize(input_filename, output_filename, lang):
     tokenized_seqs = []
 
     for sentence in tqdm(seqs, desc='tokenizing...'):
+        #全て小文d字
+        sentence = sentence.lower()
         tokenized = tokenizer.tokenize(sentence, return_str=True)
         tokenized_seqs.append(tokenized)
 
