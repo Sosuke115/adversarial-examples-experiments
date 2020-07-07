@@ -21,6 +21,32 @@ import torch
 
 PAD_TOKEN = "<PAD>"
 
+class Dataset(object):
+    def __init__(self, name, instances, label_names):
+        self.name = name
+        self.instances = instances
+        self.label_names = label_names
+
+    def __iter__(self):
+        for instance in self.instances:
+            yield instance
+
+    def __len__(self):
+        return len(self.instances)
+
+    def get_instances(self, fold=None):
+        if fold is None:
+            return self.instances
+        else:
+            return [ins for ins in self.instances if ins.fold == fold]
+
+
+class DatasetInstance(object):
+    def __init__(self, text, label, fold):
+        self.text = text
+        self.label = label
+        self.fold = fold
+
 def generate_features(dataset, tokenizer, min_count, max_word_length):
 
     def create_numpy_sequence(source_sequence, length, dtype):
@@ -30,6 +56,7 @@ def generate_features(dataset, tokenizer, min_count, max_word_length):
         return ret
 
 #     logger.info('Creating vocabulary...')
+#ここいらない
     word_counter = Counter()
     for instance in tqdm(dataset):
         sentence = instance.text.lower()
