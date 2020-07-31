@@ -80,6 +80,34 @@ def generate_features(dataset, tokenizer, min_count, max_word_length):
 
     return ret
 
+def load_amazon_dataset(lang,options):
+    data = {}
+    def read(mode):
+        x, y = [], []
+        porns = ["positive","negative"]
+        for porn in porns:
+            with open("data/amazon/" + lang + "/" + mode + "/" + porn + ".txt", "r", encoding="utf-8") as f:
+                for line in f:
+                    if line[-1] == "\n":
+                        line = line[:-1]
+                    sentence = line.split()
+                    x.append(sentence)
+                    y.append(porn)
+        
+        x,y  = shuffle(x,y,random_state=options.random_state)
+        
+        if mode == "train":
+            dev_idx = len(x) // 8 
+            data["dev_x"], data["dev_y"] = x[:dev_idx],y[:dev_idx]
+            data["train_x"], data["train_y"] = x[dev_idx:],y[dev_idx:]
+        else:
+            data["test_x"], data["test_y"] = x, y
+            
+    read("train")
+    read("test")
+        
+
+
 
 def load_mldoc_dataset(dataset_path,lang,dev_size=0.05,seed=1):
     data = {}
@@ -104,12 +132,12 @@ def load_mldoc_dataset(dataset_path,lang,dev_size=0.05,seed=1):
 #         x,y = shuffle_samples(x,y,seed)
         x,y = shuffle(x,y,random_state=seed)
         if mode == "train.10000":
-            x,y = x[:10000],y[:10000]
+            x,y = x[:3000],y[:3000]
             dev_idx = int(len(x) * dev_size)
             instances += [DatasetInstance(text, label, 'dev')  for (text, label) in zip(x[:dev_idx], y[:dev_idx])]
             instances += [DatasetInstance(text, label, 'train')  for (text, label) in zip(x[dev_idx:], y[dev_idx:])]
         else:
-            x,y = x[:2000],y[:2000]
+            x,y = x[:3000],y[:3000]
             instances += [DatasetInstance(text, label, 'test')  for (text, label) in zip(x, y)]
             
     read("train.10000",lang,instances)
