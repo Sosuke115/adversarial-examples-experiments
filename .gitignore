@@ -1,3 +1,6 @@
 data/
-*.ipynb
+preprocess/.ipynb_checkpoints
+preprocess/__pycache__
+
+
 
